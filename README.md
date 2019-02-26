@@ -9,6 +9,7 @@ running: Windows 10  Python 3.6.6 , Anaconda 1.9.6, Windows PowerShell
 *MetaData*
 
 *Scripts/Files*
+**RTF Branch works for .rtf files converted to .txt**
 1. doc_to_docx.ps1:
    If you have new (e.g. neurophys docs) raw clinical .doc files, you will need to download this powershell script to convert them to .docx en batch by hand (prior to installation):
 download from https://github.com/Apoc70/Convert-WordDocument
