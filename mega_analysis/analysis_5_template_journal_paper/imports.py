@@ -1,36 +1,18 @@
 # 16/4/19
 
-import os
-import json
-import numpy as np
-import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as ply
 import pickle
-import re
-import copy
 
 import sys
 sys.path.insert(0, r"C:\Users\ali_m\AnacondaProjects\PhD\Epilepsy_Surgery_Project")
 
-from NLP.term_phrase_outcome_cycle_many_terms import*
-from NLP.term_phrase_negation_second_pass import*
-from NLP.contingency_table import*
+from NLP.term_phrase_outcome_cycle_many_terms import *
+from NLP.term_phrase_negation_second_pass import *
+from NLP.contingency_table import *
 
-from crosstab.Semiology_Crosstab.Semiology_Crosstab_exclude_files_with_outcome_8 import*
-from crosstab.Semiology_Crosstab.main_dataframe import*
-from crosstab.Semiology_Crosstab.populate_main_dataframe import*
-from crosstab.outcomes import*
-
-from sklearn.linear_model import LogisticRegression, LogisticRegressionCV
-from sklearn.metrics import confusion_matrix, roc_auc_score, roc_curve, auc
-from sklearn.neural_network import MLPClassifier
-from sklearn.feature_selection import chi2
-from scipy.stats import chisquare
-from scipy.stats import fisher_exact
-
-# from scipy.stats import wald
-from scipy.stats import chi2_contingency
+from crosstab.Semiology_Crosstab.Semiology_Crosstab_exclude_files_with_outcome_8 import *
+from crosstab.Semiology_Crosstab.main_dataframe import *
+from crosstab.Semiology_Crosstab.populate_main_dataframe import *
+from crosstab.outcomes import *
 
 # load all pickled data including dataframes
 
@@ -66,7 +48,7 @@ def imports():
     df_No_surgery = openpickle(path_to_file5)
 
 
-    return (gold_outcomes_list, 
+    return (gold_outcomes_list,
             (_, had_surgery_MRNs),
             had_surgery_exclusions,
             df,
@@ -82,7 +64,7 @@ def LRCV5_refit_False(X_gold,y_gold):
     clf_gold_cv = LogisticRegressionCV(cv=5, refit=False).fit(X_gold, y_gold)
     y_pred_gold_cv = clf_gold_cv.predict(X_gold)
     cm = confusion_matrix(y_gold, y_pred_gold_cv)
-    print('accuracy:', clf_gold_cv.score(X_gold, y_gold), '\ny_gold shape:', y_gold.shape, 
+    print('accuracy:', clf_gold_cv.score(X_gold, y_gold), '\ny_gold shape:', y_gold.shape,
         '\ncm:\n', cm,
         '\nnumber of fx:', X_gold.shape[1],
         'AUC', auc)

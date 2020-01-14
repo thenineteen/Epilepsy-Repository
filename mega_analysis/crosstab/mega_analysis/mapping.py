@@ -1,11 +1,11 @@
 import pandas as pd
 import numpy as np
 
-def mapping(excel_file = "D:\\Ali USB Backup\\1 PhD\\Mega Analysis\\4. SystReview Single Table (NEW CROSSTAB) 25 July_ last.xlsx"):
+def mapping(excel_file):
     """
     Uses Ali and Gloria's brain reported localisation in literature to GIF parcellations,
     using Ali and Gloria's mapping.
-    
+
     # These are the maps for each lobe
     #     mapping_FL = map_df_dict['GIF FL']
     #     mapping_TL = map_df_dict['GIF TL']
@@ -13,41 +13,38 @@ def mapping(excel_file = "D:\\Ali USB Backup\\1 PhD\\Mega Analysis\\4. SystRevie
     #     mapping_OL = map_df_dict['GIF OL']
     #     mapping_CING = map_df_dict['GIF CING']
     #     mapping_INSULA = map_df_dict['GIF INSULA']
-    
+
     GIF parcellation missing hypothalamic parcellation?
-    
+
     Aug 2019 Ali Alim-Marvasti
-    
+
     """
-    map_df_dict = pd.read_excel(excel_file, 
-#                            nrows=n_rows, 
-#                            usecols=usecols, 
-                           header=1, 
+    map_df_dict = pd.read_excel(excel_file,
+#                            nrows=n_rows,
+#                            usecols=usecols,
+                           header=1,
 #                            index=index,
                            sheet_name=['GIF TL', 'GIF FL', 'GIF PL', 'GIF OL', 'GIF CING', 'GIF INSULA']
                           )
-    
+
     for lobe in map_df_dict.keys():
         map_df_dict[lobe] = map_df_dict[lobe].dropna(axis='rows', how='all')
         map_df_dict[lobe] = map_df_dict[lobe].dropna(axis='columns', how='all')
-        
+
 
 
     return map_df_dict
 
 
-def big_map():
+def big_map(excel_path):
     """
     Appends all the localisation-to-gif-mapping-DataFrames into one big DataFrame.
     """
-
-    map_df_dict = mapping()
-
-
+    map_df_dict = mapping(excel_path)
     one_map = pd.DataFrame()
     for lobe in map_df_dict.keys():
         one_map = one_map.append(map_df_dict[lobe], sort=False)
-        
+
     return one_map
 
 
@@ -61,7 +58,7 @@ def pivot_result_to_one_map(pivot_result, *one_map, raw_pt_numbers_string='pt #s
     * for each col in pivot_result, find the mapping col numbers, dropna axis rows.
     * then make new col and add the ~pt numbers and pixel intensity for all i.e. ffill-like using slicing
     * note that if you use pivot_result, all_gifs gives you the map with the pt #s. Instead, if you use
-        pivot_result_intensities, all_gifs output returns the same but instead of pt #s, intensities from the previous step. 
+        pivot_result_intensities, all_gifs output returns the same but instead of pt #s, intensities from the previous step.
 
     Makes a dataframe as it goes along, appending all the mappings.
     """
@@ -70,7 +67,7 @@ def pivot_result_to_one_map(pivot_result, *one_map, raw_pt_numbers_string='pt #s
         # one_map = one_map[0]
     if isinstance(one_map, tuple):
         one_map = one_map[0]
-    
+
     # checks
     if not suppress_prints:
         if ( len([col for col in pivot_result if col not in one_map])  > 0):
@@ -82,7 +79,7 @@ def pivot_result_to_one_map(pivot_result, *one_map, raw_pt_numbers_string='pt #s
     # initialisations
     individual_cols = [col for col in pivot_result if col in one_map]
     all_gifs = pd.DataFrame()
-    
+
     # populate the return df
     for col in individual_cols:
         col_gifs = one_map[[col]].dropna(axis='rows', how='all')
@@ -100,7 +97,7 @@ def pivot_result_to_one_map(pivot_result, *one_map, raw_pt_numbers_string='pt #s
     except KeyError:
         print('\nKeyError. all_gifs=', all_gifs)
         print('CAN NOT FIGURE THIS OUT. WHY EMPTY DATAFRAME? SKIPPED THIS ROW...? USUAL FROM QUERY_LATERALISATION call.')
-        
+
 
     # insert a new first col which contains the index value of pivot_result (i.e. the semiology term)
     # this is for Rachel Sparks's requirement:

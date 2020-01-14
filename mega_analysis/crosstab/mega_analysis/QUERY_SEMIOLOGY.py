@@ -1,4 +1,4 @@
-import pandas as pd 
+import pandas as pd
 import yaml
 import re
 
@@ -15,14 +15,14 @@ def make_simple_list(allv, allv_simple_list = []):
             make_simple_list(item, allv_simple_list=allv_simple_list)
         else:
             allv_simple_list.append(item)
-            
+
     return allv_simple_list
 
 
 def dictionary_key_recursion_(dictionary, all_keys=[], all_values=[]):
     # only initialise for first function run, not nested calls
     """
-    return all keys and values in a nested dictionary. 
+    return all keys and values in a nested dictionary.
     values may be a list of lists hence the use of the make_simple_list function to open nested lists.
     Ali Alim-Marvasti Aug 2019
 
@@ -45,7 +45,7 @@ def dictionary_key_recursion_(dictionary, all_keys=[], all_values=[]):
 
 def dictionary_key_recursion_2(dictionary, semiology_key):
     """
-    return the value(s) of a particular key, no matter how nested the key is within the dictionary. 
+    return the value(s) of a particular key, no matter how nested the key is within the dictionary.
     Ali Alim-Marvasti Aug 2019
 
     """
@@ -66,7 +66,7 @@ def dictionary_key_recursion_2(dictionary, semiology_key):
                 allk, allv = dictionary_key_recursion_(v, all_keys=[], all_values=[])
                 yield allv
                 break
-    
+
         else:
             print('searching for nested key...')
             if isinstance(v, dict):
@@ -77,16 +77,15 @@ def dictionary_key_recursion_2(dictionary, semiology_key):
 
 
 
-def use_semiology_dictionary_(semiology_term):
+def use_semiology_dictionary_(semiology_term, semiology_dict_path):
     print('using option use_semiology_dictionary as taxonomy replacement')
     # define the key rather than the terms
-    
+
     semiology_key = semiology_term
 
     # open the semiology_dictionary yaml_file
-    path_to_yaml_file = 'C:\\Users\\ali_m\\AnacondaProjects\\PhD\\Epilepsy_Surgery_Project\\NLP\\tests\\semiology_dictionary.yaml'
-    semiology_dictionary = yaml.load(open(path_to_yaml_file))  # yaml file
-    
+    semiology_dictionary = yaml.load(open(semiology_dict_path))  # yaml file
+
     # get all the keys from the semiology_dictionary:
     all_keys, _ = dictionary_key_recursion_(semiology_dictionary['semiology'])
 
@@ -95,19 +94,19 @@ def use_semiology_dictionary_(semiology_term):
         print('\nNo such key found in semiology_dictionary matching %s'%semiology_key)
         print('Running with use_semiology_dictionary option DISABLED.')
         return [semiology_term]
-    
+
     # if it does, then use the list of values of this key:
     elif re.search(semiology_key, str(all_keys), re.IGNORECASE):
         print('...\"%s\" key definitely exists in semiology_dictionary using REGEX...'%semiology_key)
 
-    # find the key, values in first key layers: pretty sure we can skip this and just use dictionary_key_recursion_2 
+    # find the key, values in first key layers: pretty sure we can skip this and just use dictionary_key_recursion_2
     dict_comprehension = {key:values for (key, values) in semiology_dictionary['semiology'].items() if key.lower()==semiology_key.lower()}
     if dict_comprehension:
         print('dict_comprehension = \n', dict_comprehension)
         _, values = dictionary_key_recursion_(dict_comprehension)
         # # this returns a single list of single items and removes the nested lists
         # values = make_simple_list(values)
-        
+
         print('values from dictionary_key_recursion_(dict_comprehension): \n', values)
         return values
 
@@ -140,25 +139,25 @@ def regex_ignore_case(term_values):
 
 
 
-def QUERY_SEMIOLOGY(df, semiology_term=['love'], 
+def QUERY_SEMIOLOGY(df, semiology_dict_path, semiology_term=['love'],
                     ignore_case=True, use_semiology_dictionary=False,
                     col1 = 'Reported Semiology',
                     col2 = 'Semiology Category'):
     """
     Search for key terms in both "reported semiology" and "semiology category" and return df if found in either.
-    Removes all columns which are entirely null. 
+    Removes all columns which are entirely null.
 
     ---
-    df is the MegaAnalysis DataFrame 
+    df is the MegaAnalysis DataFrame
     semiology_term is the query (can be a user-defined list e.g. ["epigastric aura", "rising sensation"]) - treated as "OR"
     ignore_case: ignores case using a regular expression
-    use_semiology_dictionary uses the yaml dictionary of equivalent terms, cycles through all equivalent terms and appends  
-        results to the output df before removing duplicates 
+    use_semiology_dictionary uses the yaml dictionary of equivalent terms, cycles through all equivalent terms and appends
+        results to the output df before removing duplicates
         (instead of using user defined semiology_term lists, uses pre-defined yaml dictionary)
-        keyword-based user queries are mapped to ontology entities 
+        keyword-based user queries are mapped to ontology entities
 
     returns a DataFrame subset of df input containing all the results from the df - no melting or pivoting.
-    
+
     """
 
     # initialise return object
@@ -188,12 +187,15 @@ def QUERY_SEMIOLOGY(df, semiology_term=['love'],
         # this is if there is only one term e.g. "love" and we don't want each letter to be used
         if ignore_case:
             semiology_term = r'(?i)'+semiology_term
-        values = [semiology_term]  
+        values = [semiology_term]
 
 
     if use_semiology_dictionary:
-        values_dict_or_list = use_semiology_dictionary_(semiology_term)
-       
+        values_dict_or_list = use_semiology_dictionary_(
+            semiology_term,
+            semiology_dict_path,
+        )
+
         if isinstance(values_dict_or_list, list):
             values = values_dict_or_list
         elif isinstance(values_dict_or_list, dict):
@@ -215,7 +217,7 @@ def QUERY_SEMIOLOGY(df, semiology_term=['love'],
         inspect_result = inspect_result.append(
             df.loc[df[col2].str.contains(term, na=False)], sort=False
         )
-            
+
     inspect_result = inspect_result.dropna(axis='columns', how='all')  # may remove lateralising or localising if all nan
 
     try:
@@ -223,8 +225,8 @@ def QUERY_SEMIOLOGY(df, semiology_term=['love'],
     except ValueError:
         print('QUERY SEMIOLOGY ERROR: This semiology was not found within the reported literature nor in the semiology categories')
         return
-    
-    
+
+
     print('\nLocalising Datapoints relevant to query %s: '%semiology_term, inspect_result['Localising'].sum())
     try:
         print('Lateralising Datapoints relevant to query: ', inspect_result['Lateralising'].sum())

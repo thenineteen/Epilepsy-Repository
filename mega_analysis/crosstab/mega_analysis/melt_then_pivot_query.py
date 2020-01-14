@@ -1,5 +1,5 @@
 import pandas as pd
-from crosstab.mega_analysis.group_columns import full_id_vars, lateralisation_vars, anatomical_regions
+from .group_columns import full_id_vars, lateralisation_vars, anatomical_regions
 
 
 def melt_then_pivot_query(df, inspect_result, semiology_term):
@@ -23,7 +23,7 @@ def melt_then_pivot_query(df, inspect_result, semiology_term):
 
     id_vars_present_in_query = [cols for cols in inspect_result.columns if cols in full_id_cols]
 
-    inspect_result_melted = inspect_result.melt(id_vars=id_vars_present_in_query, value_vars=relevant_localisations, 
+    inspect_result_melted = inspect_result.melt(id_vars=id_vars_present_in_query, value_vars=relevant_localisations,
                                 var_name='melted_variable', value_name='melted_numbers')
 
     # replace NaNs with 0s as melting creates many:

@@ -16,11 +16,20 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=find_packages(exclude=['*tests']),
-    install_requires=['argparse', 'PyYaml', 'PyPDF2', 'scikit-learn',
-                      'json', 'copy', 'uuid', 'docx', 'os', 're', 'zipfile',
-                      'pandas'],
+    install_requires=[
+        'docx',
+        'matplotlib',
+        'matplotlib-venn',
+        'pandas',
+        'PyPDF2',
+        'PyYaml',
+        'scikit-learn',
+        'seaborn',
+        'uuid',
+        'xlrd',
+    ],
     entry_points={
         'console_scripts': [
-            'Process_Epilepsy_Docx = preprocessing.command:main_docx_preprocess'
+            'Process_Epilepsy_Docx = mega_analysys.preprocessing.command:main_docx_preprocess'
         ]}
 )

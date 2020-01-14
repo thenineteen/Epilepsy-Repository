@@ -1,9 +1,6 @@
 import pandas as pd
 import numpy as np
-try:
-    from crosstab.semiology_all_localisations import all_localisations
-except:
-    from .crosstab.semiology_all_localisations import all_localisations
+from .semiology_all_localisations import all_localisations
 
 
 
@@ -20,7 +17,7 @@ def semiology_lateralisation_localisation(
     Imports as pd df and then melts the data and drops NANs. Then uses pivot_table with aggfunc='sum'.
 
     Determine which semiologies and localisations we are interested in analysing using the keywords.
-    
+
     >!Check the nrows, usecols and index_col below!
     >!Check the all_localisations() function has upto date file and columns
 
@@ -53,7 +50,7 @@ def semiology_lateralisation_localisation(
     # df_localisation.columns.name = "Localisation"
 
 # melt the DataFrame to create a column of all the Localisation terms - to allow pivoting by Semiology
-    df_melted = df_clean.melt(id_vars=semiologies_to_extract, value_vars=localisations_to_extract, 
+    df_melted = df_clean.melt(id_vars=semiologies_to_extract, value_vars=localisations_to_extract,
                               var_name='Localisation', value_name='numbers')
 
 # use pivot_table() to combine the semiologies which are exactly the same:
@@ -66,7 +63,7 @@ def semiology_lateralisation_localisation(
 
 
 # # now extract the Lateralisation DataFrame
-#     df_lateralisation = 
+#     df_lateralisation =
 
 
     return df_localisation
