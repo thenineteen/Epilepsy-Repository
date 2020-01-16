@@ -31,7 +31,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'Process_Epilepsy_Docx = mega_analysys.preprocessing.command:main_docx_preprocess',
-            'make-scores = mega_analysys.cli:main',
+            'Process_Epilepsy_Docx = mega_analysis.preprocessing.command:main_docx_preprocess',
+            'make-scores = mega_analysis.cli:main',
         ]}
 )
