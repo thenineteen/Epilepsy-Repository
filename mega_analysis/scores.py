@@ -20,7 +20,7 @@ from mega_analysis.crosstab.mega_analysis.pivot_result_to_pixel_intensities impo
 from mega_analysis.crosstab.mega_analysis.mapping import mapping, big_map, pivot_result_to_one_map
 
 
-def get_scores(semiology_term='Head version'):
+def get_scores(semiology_term='Head version', output_path=None):
     repo_dir = Path(__file__).parent.parent
     resources_dir = repo_dir / 'resources'
     excel_path = resources_dir / 'syst_review_single_table.xlsx'
@@ -79,4 +79,9 @@ def get_scores(semiology_term='Head version'):
     labels = array[:, 1].astype(np.uint16)
     scores = array[:, 3].astype(np.float32)
     scores_dict = {int(label): float(score) for (label, score) in zip(labels, scores)}
+
+    if output_path is not None:
+        df = pd.DataFrame(scores_dict.items(), columns=['Label', 'Score'])
+        df.to_csv(output_path, index=False)
+
     return scores_dict
