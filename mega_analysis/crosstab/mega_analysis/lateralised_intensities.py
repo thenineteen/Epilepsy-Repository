@@ -5,7 +5,8 @@ def lateralisation_to_pixel_intensities(all_combined_gifs, df,
                                         semiology_term,
                                         quantiles, method='non-linear', scale_factor=10,
                                         intensity_label='lateralised intensity',
-                                        use_semiology_dictionary=False):
+                                        use_semiology_dictionary=False,
+                                        plot=False):
     """
     runs pivot_result_to_pixel_intensities when the input has already been mapped to gifs as a result of
     running QUERY_LATERALISATION.
@@ -17,7 +18,7 @@ def lateralisation_to_pixel_intensities(all_combined_gifs, df,
     pivot_result = all_combined_gifs[['pt #s']].T
     all_combined_gifs_intensities = pivot_result_to_pixel_intensities(pivot_result, df,
                                       method=method, scale_factor=scale_factor, quantiles=quantiles,
-                                      use_main_df_calibration=False)
+                                      use_main_df_calibration=False, plot=plot)
 
     # now we just need to transpose it and add the other columns back
     a2 = all_combined_gifs[['Gif Parcellations']].T

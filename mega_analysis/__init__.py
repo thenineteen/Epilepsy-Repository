@@ -6,3 +6,5 @@ import json
 import uuid
 from pathlib import *
 import copy
+
+from .scores import get_scores

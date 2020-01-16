@@ -25,7 +25,7 @@ from mega_analysis.crosstab.mega_analysis.mapping import mapping, big_map, pivot
 
 repo_dir = Path(__file__).parent.parent
 resources_dir = repo_dir / 'resources'
-excel_path = resources_dir / 'syst_review_single_table_2019_07_25.xlsx'
+excel_path = resources_dir / 'syst_review_single_table.xlsx'
 semiology_dict_path = resources_dir / 'semiology_dictionary.yaml'
 
 # set the semiology of interest:
@@ -37,11 +37,6 @@ semiology_term='Head Version'
 use_semiology_dictionary = True
 
 # # LATERALISATION initilisation
-# sys.path.insert(0, r"C:\Users\ali_m\AnacondaProjects\PhD\Epilepsy_Surgery_Project")
-
-post_op = 'Post-op Sz Freedom (Engel Ia, Ib; ILAE 1, 2)'
-concordant = 'Concordant Neurophys & Imaging (MRI, PET, SPECT)'
-sEEG_ES = 'sEEG and/or ES'
 
 # I reconmend minmaxscaler. The previous example used non-linear which you have the visualisations for (Rachel did)
 # method = 'non-linear'
@@ -87,6 +82,14 @@ all_lateralised_gifs = lateralisation_to_pixel_intensities(
     use_semiology_dictionary=use_semiology_dictionary,
 )
 
-all_lateralised_gifs.to_csv('/tmp/test.csv')
+array = np.array(all_lateralised_gifs)
+labels = array[:, 1].astype(np.uint16)
+scores = array[:, 3].astype(np.float32)
+
+scores_dict = {int(label): float(score) for (label, score) in zip(labels, scores)}
+
+result = pd.DataFrame(np.column_stack([labels, scores]), columns=['Label', 'Score'])
+
+result.to_csv('/tmp/test.csv', index=False)
 
 # you want the final column of all_lateralised_gifs and the 'Gif Parcellations' too.
