@@ -8,7 +8,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
-    name="Epilepsy Surgery Text Data Analysis",
+    name="mega_analysis",
     version="0.1.0",
     author="Ali Alim-Marvasti",
     description="analysis of presurgical PDFs and word documents to predict"
@@ -17,6 +17,7 @@ setup(
     long_description_content_type="text/markdown",
     packages=find_packages(exclude=['*tests']),
     install_requires=[
+        'click',
         'docx',
         'matplotlib',
         'matplotlib-venn',
@@ -30,6 +31,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'Process_Epilepsy_Docx = mega_analysys.preprocessing.command:main_docx_preprocess'
+            'Process_Epilepsy_Docx = mega_analysys.preprocessing.command:main_docx_preprocess',
+            'make-scores = mega_analysys.cli:main',
         ]}
 )
