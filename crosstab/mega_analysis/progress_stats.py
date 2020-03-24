@@ -17,8 +17,10 @@ def progress_stats(df):
     # initialise: first three are the excel file column names
     post_op = 'Post-op Sz Freedom (Engel Ia, Ib; ILAE 1, 2)'
     concordant = 'Concordant Neurophys & Imaging (MRI, PET, SPECT)'
-    sEEG_ES = 'sEEG and/or ES'
-    
+    # sEEG_ES = 'sEEG and/or ES'
+    sEEG_ES = 'sEEG (y) and/or ES (ES)'# new March 2020 version
+
+
     # initialise the df_ground_truths df:
     colx = pd.MultiIndex.from_product([['Lateralising Datapoints', 'Localising Datapoints'], ['Exclusive', 'Total']],
                                    #names=['year', 'visit']
@@ -33,8 +35,8 @@ def progress_stats(df):
     df_ground_truths.loc['Concordant', ('Lateralising Datapoints', 'Total')] = df.loc[df[concordant].notnull()].Lateralising.sum()
     df_ground_truths.loc['Concordant', ('Localising Datapoints', 'Total')] = df.loc[df[concordant].notnull()].Localising.sum()
 
-    df_ground_truths.loc['sEEG and|or ES', ('Lateralising Datapoints', 'Total')] = df.loc[df['sEEG and/or ES'].notnull()].Lateralising.sum()
-    df_ground_truths.loc['sEEG and|or ES', ('Localising Datapoints', 'Total')] = df.loc[df['sEEG and/or ES'].notnull()].Localising.sum()
+    df_ground_truths.loc['sEEG and|or ES', ('Lateralising Datapoints', 'Total')] = df.loc[df[sEEG_ES].notnull()].Lateralising.sum()
+    df_ground_truths.loc['sEEG and|or ES', ('Localising Datapoints', 'Total')] = df.loc[df[sEEG_ES].notnull()].Localising.sum()
 
     df_ground_truths.loc['ES', ('Lateralising Datapoints', 'Total')] = df.loc[df[sEEG_ES]== 'ES'].Lateralising.sum()
     df_ground_truths.loc['ES', ('Localising Datapoints', 'Total')] = df.loc[df[sEEG_ES]== 'ES'].Localising.sum()
