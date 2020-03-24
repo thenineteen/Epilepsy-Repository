@@ -11,12 +11,14 @@ def exclusions(df,
     Exclude certain semiologies and criteria prior to performing searches on the df.
 
     Note PET_hypermetabolism is a subset of SPECT_PET which is itself a subset of CONCORDANCE.
+    SPECT_PET also excludes fMRI DTI when no structural MRI lesion.
 
     """
     
     post_op = 'Post-op Sz Freedom (Engel Ia, Ib; ILAE 1, 2)'
     concordant = 'Concordant Neurophys & Imaging (MRI, PET, SPECT)'
-    sEEG_ES = 'sEEG and/or ES'
+    # sEEG_ES = 'sEEG and/or ES'
+    sEEG_ES = 'sEEG (y) and/or ES (ES)'  # March 2020 version
 
 
     if POST_ictals:
@@ -63,7 +65,8 @@ def exclusions(df,
     if SPECT_PET:
         col1 = 'Concordant Neurophys & Imaging (MRI, PET, SPECT)'
         col2 = col1
-        spect_pet = ['SPECT', 'PET', 'FDG-PET', 'SPECT scan', 'PET scan']
+        spect_pet = ['SPECT', 'PET', 'FDG-PET', 'SPECT scan', 'PET scan', 'ictal SPECT', 'interictal PET', 'inter-ictal PET',
+                     'PET+ictal SPECT', 'Surgical finding, PET hypometabolism', 'fMRI+DTI', 'PET (interictal hypometabolism)']
         spect_pet_inspection = QUERY_SEMIOLOGY(df, semiology_term=spect_pet, 
                                                 ignore_case=True, use_semiology_dictionary=False,
                                                 col1=col1, col2=col2)

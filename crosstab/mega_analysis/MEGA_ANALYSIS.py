@@ -17,9 +17,9 @@ from crosstab.mega_analysis.exclusions import exclusions
 
 
 def MEGA_ANALYSIS(
-    excel_data = "D:\\Ali USB Backup\\1 PhD\\4. SystReview Single Table (NEW CROSSTAB) 25 July_ last.xlsx",
-    n_rows = 550,
-    usecols = "A:CU",
+    excel_data = "D:\\Ali USB Backup\\1 PhD\\Mega Analysis\\4. SystReview Single Table (NEW CROSSTAB) March 2020.xlsx",
+    n_rows = 1045,
+    usecols = "A:DG",
     header = 1,
     exclude_data=False, **kwargs):
     
@@ -74,8 +74,10 @@ def MEGA_ANALYSIS(
 # 2. checking for missing labels e.g. Semiology Categories Labels:
     print('\n2. Checking for missing values for columns')
     missing_columns(df)
-    print('\n Checking for dtypes:')
-    localisation_labels = df.columns[17:72]
+    
+    print('\n Checking for dtypes: first localisation_labels column is: ', df.columns[17], '...last one is', df.columns[88])
+    # localisation_labels = df.columns[17:72]  # old July 2019
+    localisation_labels = df.columns[17:88]  # news March 2020
     for col in df[localisation_labels]:
         for val in df[col]:
             if ( type(val) != (np.float) ) & ( type(val) != (np.int) ):
@@ -86,9 +88,12 @@ def MEGA_ANALYSIS(
     print('\n3. forward filled references')
 
     # 4 check no other entries besides "ES" and "y" in list(df['sEEG and/or ES'].unique())
+    # March 2020 updated for sEEG_ES = 'sEEG (y) and/or ES (ES)'  # March 2020 version
+    sEEG_ES = 'sEEG (y) and/or ES (ES)'  # March 2020 version
+    
     print("\n4. 'sEEG and/or ES' column only contains ['ES', nan, 'y']: ")
-    print(list(df['sEEG and/or ES'].unique()) == ['ES', np.nan, 'y'])
-    if not (list(df['sEEG and/or ES'].unique()) == ['ES', np.nan, 'y']):
+    print(list(df[sEEG_ES].unique()) == ['ES', np.nan, 'y'])
+    if not (list(df[sEEG_ES].unique()) == ['ES', np.nan, 'y']):
         print('the set includes:', list(df['sEEG and/or ES'].unique()) )
 
     # 5. print some basic progress stats:
