@@ -98,6 +98,11 @@ def associations(dataset, nominal_columns=None, mark_columns=False, Theils_U=Fal
     associations(X, nominal_columns='all', mark_columns=False, TheilsU=True, plot=True,
                           return_results = False)
     """
+
+    import matplotlib.pyplot as plt
+    csfont = {'fontname':'Times New Roman'}
+
+
     #dataset = convert(dataset, 'dataframe')
     columns = dataset.columns
     if nominal_columns is None:
@@ -148,16 +153,17 @@ def associations(dataset, nominal_columns=None, mark_columns=False, Theils_U=Fal
             title = 'Categorical Correlation: Cramer\'s V Semiology, HS, EZ \n%d TEST patients, %d variables'%(dataset.shape[0], dataset.shape[1])
 
         else:
-            title = 'Title'
-        plt.title(title)
-        plt.xticks(np.arange(len(dataset.columns)), dataset.columns, rotation='vertical', fontsize=6, fontweight='ultralight')
-        plt.yticks(np.arange(len(dataset.columns)), dataset.columns, fontsize=6)
+            # title = 'Theil\'s U for Features, Models and Temporal-EZ' 
+            title = ''
+        plt.title(title, fontsize=10, fontweight='bold')
+        plt.xticks(np.arange(len(dataset.columns)), dataset.columns, rotation='vertical', fontsize=4, fontweight='ultralight')
+        plt.yticks(np.arange(len(dataset.columns)), dataset.columns, fontsize=4)
         
         if savefigure:
             # plt.savefig('L:\\Parashkev_top_2%_TheilsU.eps', 
             #             format='eps', bbox_inches='tight', dpi=1200)
 
-            plt.savefig('D:\\Ali USB Backup\\1 PhD\paper 1\\fixed fully\\Cramers V 126.jpg', 
+            plt.savefig('D:\\Ali USB Backup\\1 PhD\paper 1\\fixed fully\\Lancet Step1 Combined Theils U no title 107mm.jpg', 
                         format='jpg', bbox_inches='tight', dpi=1200)
 
         plt.show()
