@@ -4,7 +4,7 @@ from scipy.stats import chi2, chisquare, fisher_exact, chi2_contingency
 from sklearn.metrics import matthews_corrcoef
 from Stats.TheilsU import *
 
-def performance_metrics(df, col, target):
+def performance_metrics(df, col, target, called_by_model_performance=False):
     """
     Setting Univariate Benchmarks using DataFrame
     col = feature we are intersted in (str)
@@ -13,13 +13,25 @@ def performance_metrics(df, col, target):
         - or can be of type pd.series/np.array
     df: rows= patients, cols = features
 
+    Useful for benchmarks - no CI or std - static. 
     Marvasti Dec 2019
     """
+
 
     if type(target) != str:
         df[target.name] = np.nan
         df.loc[target.index, target.name] = target
         target=target.name
+
+    if target == col:
+        # checking two columns with same name in DataFrame, change names for convenience to avoid nan error:
+        target = target+"_"
+        # now can add as a duplicate column
+        print("NB you are checking performance metrics with itself:")
+        df[target] = np.nan
+        df.loc[df[col].index, target] = df[col]
+
+
 
     no_of_pts_with_semiology_and_target_outcome = df.loc[df[col]==1, target].sum()
     total_with_semio = df.loc[df[col]==1, target].count()
@@ -32,12 +44,12 @@ def performance_metrics(df, col, target):
     col_n_target_y = df.loc[((df[target]==1)&(df[col]==0)), target].count()  # equivalent to .sum()
     col_n_target_n = df.loc[((df[target]==0)&(df[col]==0)), target].count()
 
-    
-    print('variable being tested: ', col, ' target: ', target)
-    if col_y_target_n == (df.loc[((df[target]==0)&(df[col]==1)), target].count()) :
-        print ('integrity check : pass')
-    else: 
-        print('oops major probelmo: not adding up. see source')
+    if called_by_model_performance==False:
+        print('variable being tested: ', col, ' target: ', target)
+        if col_y_target_n == (df.loc[((df[target]==0)&(df[col]==1)), target].count()) :
+            print ('integrity check : pass')
+        else: 
+            print('oops major probelmo: not adding up. see source')
     
 
     OR_fisher, pv_fisher = fisher_exact(
@@ -46,11 +58,14 @@ def performance_metrics(df, col, target):
         [col_n_target_y, col_n_target_n]
         ]         ) 
     
-    OR_chi, pv_chi, _, _ = chi2_contingency(
-        [
-        [col_y_target_y, col_y_target_n],
-        [col_n_target_y, col_n_target_n]
-        ]         )
+    try:
+        OR_chi, pv_chi, _, _ = chi2_contingency(
+            [
+            [col_y_target_y, col_y_target_n],
+            [col_n_target_y, col_n_target_n]
+            ]         )
+    except ValueError: 
+        OR_chi = np.nan
 
     OR_manual = (col_y_target_y/col_y_target_n) / (col_n_target_y/col_n_target_n)
 
@@ -84,10 +99,18 @@ def performance_metrics(df, col, target):
   
     metrics_OR = {'OR_fisher': OR_fisher, 'OR_chi':OR_chi ,  'OR_manual': OR_manual}
     metrics_classic = {'SENS':SENS, 'SPEC':SPEC, 'PPV':PPV, 'NPV':NPV, 'F1_MACRO':F1_MACRO,  'BAL_ACC':BAL_ACC, 
-        'ACCURACY_simple':ACCURACY_simple, 'Matthews Correlation Coefficient':MCC, 'Theils U': THEILSU}
+        'ACCURACY_simple':ACCURACY_simple, 'Matthews Correlation Coefficient':MCC, 'Theils U': THEILSU, 
+        'Fisher p-value': pv_fisher}
 
-    for i in metrics_OR.keys():
-        print(i, metrics_OR[i])
 
-    for j in metrics_classic.keys():
-        print(j, metrics_classic[j])
+    if called_by_model_performance==True:
+        return F1_MACRO, BAL_ACC, ACCURACY_simple, SENS, SPEC, PPV, NPV, MCC, THEILSU
+
+    else:    
+        for i in metrics_OR.keys():
+            print(i, metrics_OR[i])
+
+        for j in metrics_classic.keys():
+            print(j, metrics_classic[j])
+
+        return

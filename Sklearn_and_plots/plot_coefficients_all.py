@@ -4,8 +4,11 @@ import matplotlib.pyplot as plt
 
 
 
-def plot_coefficients_all(classifier, feature_names, save=False, title='Linear-SVC for Temporal-EZ prediction: Feature Ranking'):
-    coef = classifier.coef_.ravel()
+def plot_coefficients_all(classifier, feature_names, save=False, title='Test: Feature Ranking'):
+    try:
+        coef = classifier.coef_.ravel()
+    except AttributeError:
+        coef = classifier.feature_importances_.ravel()
     coefficients = np.argsort(coef)[0:]
 #     coefficients = np.hstack(coefficients)
     
