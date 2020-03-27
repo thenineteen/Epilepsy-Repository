@@ -47,7 +47,7 @@
                               "((?<!no )(?<!denies )(?<!deny ))ictal emeticus", "((?<!no )(?<!denies )(?<!deny ))ictal vomiting", "vomit", "borborygmi", "encoparesis", "burp(?:ing)",
                               "ictal urinary urge", "((?<!no )(?<!denies )(?<!deny ))urinary urge", "urgency aura", "aura of (:?urinary)? ?urge",
                               "((?<!no )(?<!denies )(?<!deny ))autonomic",
-                              "flush" ]
+                              "flush"]
     "Olfactory-Gustatory": ["(?<!no )olfactory", "(?<!no )odd smell", "burn(ing)? (aura)|(sens[a-z]*)", "(metallic)?.?taste", "(?<!no )strange taste",
                             "((?<!no )(?<!denies )(?<!deny ))odd taste", "((?<!no )(?<!not preceeded by))bad taste", "(?<!no )sour taste", "(?<!no )nasty taste",
                             "(?<!no )unpleasant taste", "(?<!no )funny taste", "(?<!no )((soapy)|(tinny)|(brakish)|(bitter)|(foul)|(rotten)|(horrible)|(abnormal)) taste", 
