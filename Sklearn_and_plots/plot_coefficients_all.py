@@ -14,7 +14,7 @@ def save_folder_of_plot(model):
 
 
 def cm2inch(values) -> tuple:
-    new_values = tuple(value/2 for value in values)
+    new_values = tuple(value/2.54  for value in values)
     return new_values
 
 
