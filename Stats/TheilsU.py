@@ -62,9 +62,10 @@ def TheilsU(x, y):
 # https://github.com/shakedzy/dython/blob/master/build/lib/dython/nominal.py
 
 def associations(dataset, nominal_columns=None, mark_columns=False, Theils_U=False, plot=True,
-                          return_results = False, 
-                          savefigure=False,
+                          return_results = False,
+                          savefigure=False, path_name=None,
                           title_auto=False,
+                          cmap='YlOrRd',
                           **kwargs):
     """
     Calculate the correlation/strength-of-association of features in data-set with both categorical (eda_tools) and
@@ -118,6 +119,7 @@ def associations(dataset, nominal_columns=None, mark_columns=False, Theils_U=Fal
                 if columns[i] in nominal_columns:
                     if columns[j] in nominal_columns:
                         if Theils_U:
+                            title = 'Theil\'s U \n%d doctors, %d categorical specialties and religious affiliations'%(dataset.shape[0], dataset.shape[1])
                             corr[columns[j]][columns[i]] = TheilsU(dataset[columns[i]],dataset[columns[j]])
                             corr[columns[i]][columns[j]] = TheilsU(dataset[columns[j]],dataset[columns[i]])
                         else:
@@ -145,25 +147,26 @@ def associations(dataset, nominal_columns=None, mark_columns=False, Theils_U=Fal
         corr.index = marked_columns
     if plot:
         plt.figure(figsize=kwargs.get('figsize',None))
-        sns.heatmap(corr, annot=kwargs.get('annot',False), fmt=kwargs.get('fmt','.2f'), cmap='YlOrRd')
-        
+        sns.heatmap(corr, annot=kwargs.get('annot',False), fmt=kwargs.get('fmt','.2f'), cmap=cmap)
+
         if title_auto:
             # title = 'Categorical Correlation: Theil\'s U for top X%s of Diagnoses\n\%d Patients, %d Diagnoses'%("%", dataset.shape[0], dataset.shape[1])
             # title = 'Categorical Correlation: Theil\'s U Semiology, HS, EZ \n%d TEST patients, %d variables'%(dataset.shape[0], dataset.shape[1])
-            title = 'Categorical Correlation: Cramer\'s V Semiology, HS, EZ \n%d TEST patients, %d variables'%(dataset.shape[0], dataset.shape[1])
+            title = 'Categorical Correlation: Semiology, HS, EZ \n%d TEST patients, %d variables'%(dataset.shape[0], dataset.shape[1])
 
         else:
-            # title = 'Theil\'s U for Features, Models and Temporal-EZ' 
-            title = ''
-        plt.title(title, fontsize=10, fontweight='bold')
-        plt.xticks(np.arange(len(dataset.columns)), dataset.columns, rotation='vertical', fontsize=4, fontweight='ultralight')
-        plt.yticks(np.arange(len(dataset.columns)), dataset.columns, fontsize=4)
-        
+            # title = 'Theil\'s U for Features, Models and Temporal-EZ'
+            if not title:
+                title = ''
+        plt.title(title, fontsize=14, fontweight='bold')
+        plt.xticks(np.arange(len(dataset.columns)), dataset.columns, rotation='vertical', fontsize=12, fontweight='ultralight')
+        plt.yticks(np.arange(len(dataset.columns)), dataset.columns, fontsize=12)
+
         if savefigure:
-            # plt.savefig('L:\\Parashkev_top_2%_TheilsU.eps', 
+            # plt.savefig('L:\\Parashkev_top_2%_TheilsU.eps',
             #             format='eps', bbox_inches='tight', dpi=1200)
 
-            plt.savefig('D:\\Ali USB Backup\\1 PhD\paper 1\\fixed fully\\Lancet Step1 Combined Theils U no title 107mm.jpg', 
+            plt.savefig(path_name,
                         format='jpg', bbox_inches='tight', dpi=1200)
 
         plt.show()
